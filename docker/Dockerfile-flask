@@ -5,4 +5,3 @@ RUN pip install -U pip wheel
 RUN pip install Flask pymongo
 RUN curl https://raw.githubusercontent.com/ipa-rar-sg/THMHO_dashboard/sparsenosql/src/flask/app.py --output app.py
 CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
-
