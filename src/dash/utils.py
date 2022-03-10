@@ -6,16 +6,17 @@ import pymongo
 from datetime import datetime, timedelta
 
 config = {
-    'collection' : os.getenv('MONGO_COLLECTION'),
-    'dbname' : os.getenv('MONGO_INITDB_DATABASE'),
-    'user' : os.getenv('MONGO_INITDB_ROOT_USERNAME'),
-    'pass' : os.getenv('MONGO_INITDB_ROOT_PASSWORD'),
-    'host' : 'localhost',
+    'collection': os.getenv('MONGO_COLLECTION'),
+    'dbname': os.getenv('MONGO_INITDB_DATABASE'),
+    'user': os.getenv('MONGO_INITDB_ROOT_USERNAME'),
+    'pass': os.getenv('MONGO_INITDB_ROOT_PASSWORD'),
+    'host': 'localhost',
     'width': int(os.getenv('HEATMAP_WIDTH')),
     'height': int(os.getenv('HEATMAP_HEIGHT'))
 }
 
 conn_str = f"mongodb://{config['user']}:{config['pass']}@{config['host']}:27017/{config['dbname']}"
+
 
 class DataHolder:
     def __init__(self):
@@ -45,7 +46,7 @@ class DataHolder:
             np.full((len(dbentry['indices']),), 100),
             np.array(dbentry['indices']),
             np.array(dbentry['indptr'])
-        ), shape = self.shape)
+        ), shape=self.shape)
 
     def read_mask(self):
         result = self.read_from_query({"name": "base_mask"})
@@ -58,7 +59,7 @@ class DataHolder:
 
     def decode(self, csr):
         return (self.mask*100) + csr.toarray()
-        
+
     def update(self):
         _tmp = self.read_from_query({"date": {"$gte": self.last_time}})
         if _tmp:
@@ -85,4 +86,3 @@ class DataHolder:
     def get_last_data(self):
         _tmp = self.generate_csr(self.last_data)
         return self.decode(_tmp)
-

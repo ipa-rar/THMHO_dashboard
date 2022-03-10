@@ -47,7 +47,7 @@ data = utils.DataHolder()
 
 resolution = (1920, 1080)
 cell_max_size = resolution[1] // data.config['width']
-default_marks = {i: {'label': f'{i}'} for i in range(1,1)}
+default_marks = {i: {'label': f'{i}'} for i in range(1, 1)}
 
 TOLERANCE = 40
 # the style arguments for the sidebar.
@@ -74,52 +74,52 @@ TEXT_STYLE = {
 controls = dbc.FormGroup(
     [
         html.Div([
-        html.H5('Show'),
-        html.P(),
-        dcc.RadioItems(
-            id = 'mode',
-            options = [
-                {'label': ' Last heatmap (Auto update)', 'value': 'auto'},
-                {'label': ' Heatmap by selected date', 'value': 'date'},
-                {'label': ' Slider of last searched date', 'value': 'slide'}
-            ],
-            value = 'auto',
-            labelStyle={'display': 'block'}
-        ),
-        html.H5('Select Date'),
-        dcc.DatePickerSingle(id='date_picker'),
-        html.P(),
-        html.H5('Select Time'),
-        html.P(),
-        html.H6('Hour'),
-        dcc.Dropdown(
-            id = 'hour',
-            options = [{'label': str(i), 'value': i} for i in range(24)]
-        ),
-        html.H6('Minute'),
-        dcc.Dropdown(
-            id = 'minute',
-            options = [{'label': str(i), 'value': i} for i in range(60)]
-        ),
-        html.H6('Second'),
-        dcc.Dropdown(
-            id = 'second',
-            options = [{'label': str(i), 'value': i} for i in range(60)]
-        ),
-        html.P(),
-        html.H5('Last heatmaps'),
-        html.P(),
-        dcc.Slider(
-            id = 'slider',
-            marks = default_marks,
-            min = 1,
-            max = 10,
-            value = 1,
-            step = None,
-            updatemode = 'drag',
-            included = False
-        )
-    ]   )
+            html.H5('Show'),
+            html.P(),
+            dcc.RadioItems(
+                id='mode',
+                options=[
+                    {'label': ' Last heatmap (Auto update)', 'value': 'auto'},
+                    {'label': ' Heatmap by selected date', 'value': 'date'},
+                    {'label': ' Slider of last searched date', 'value': 'slide'}
+                ],
+                value='auto',
+                labelStyle={'display': 'block'}
+            ),
+            html.H5('Select Date'),
+            dcc.DatePickerSingle(id='date_picker'),
+            html.P(),
+            html.H5('Select Time'),
+            html.P(),
+            html.H6('Hour'),
+            dcc.Dropdown(
+                id='hour',
+                options=[{'label': str(i), 'value': i} for i in range(24)]
+            ),
+            html.H6('Minute'),
+            dcc.Dropdown(
+                id='minute',
+                options=[{'label': str(i), 'value': i} for i in range(60)]
+            ),
+            html.H6('Second'),
+            dcc.Dropdown(
+                id='second',
+                options=[{'label': str(i), 'value': i} for i in range(60)]
+            ),
+            html.P(),
+            html.H5('Last heatmaps'),
+            html.P(),
+            dcc.Slider(
+                id='slider',
+                marks=default_marks,
+                min=1,
+                max=10,
+                value=1,
+                step=None,
+                updatemode='drag',
+                included=False
+            )
+        ])
     ]
 )
 
@@ -136,16 +136,17 @@ content_first_row = dbc.Row(
     [
         dcc.Graph(id='heatmap'),
         dcc.Interval(
-            id = 'interval',
-            interval = 3 * 1000, # Milliseconds
-            n_intervals = 0
+            id='interval',
+            interval=3 * 1000,  # Milliseconds
+            n_intervals=0
         ),
     ]
 )
 
 content = html.Div(
     [
-        html.H2('Temporal Heat Map of Human Occupancy Dashboard', style=TEXT_STYLE),
+        html.H2('Temporal Heat Map of Human Occupancy Dashboard',
+                style=TEXT_STYLE),
         html.Hr(),
         content_first_row
     ],
@@ -154,6 +155,7 @@ content = html.Div(
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = html.Div([sidebar, content])
+
 
 @app.callback(Output('heatmap', 'figure'),
               Output('slider', 'marks'),
@@ -195,21 +197,22 @@ def update_last_heatmap(n, _mode, _date, _hour, _min, _sec, _nheat):
         _tmp_data = data.get_last_data()
         _tmp_title = f'Showing heatmap: {data.last_time}'
 
-    fig = go.Figure(data = go.Heatmap(
-        z = _tmp_data,
-        x = list(range(0, data.config['width'])),
-        y = list(range(0, data.config['height'])),
-        colorscale = "thermal",
-        )
+    fig = go.Figure(data=go.Heatmap(
+        z=_tmp_data,
+        x=list(range(0, data.config['width'])),
+        y=list(range(0, data.config['height'])),
+        colorscale="thermal",
+    )
     )
     fig.update_layout(
-        autosize = False,
-        width = 1.5*cell_max_size * data.config['width'],
-        height = 1.5*cell_max_size * data.config['height'],
-        title = f'<b>{_tmp_title}</b>',
-        title_x = 0.5,
+        autosize=False,
+        width=1.5*cell_max_size * data.config['width'],
+        height=1.5*cell_max_size * data.config['height'],
+        title=f'<b>{_tmp_title}</b>',
+        title_x=0.5,
     )
     return fig, marks
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, host='0.0.0.0')
